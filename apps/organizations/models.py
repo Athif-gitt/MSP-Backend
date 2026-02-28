@@ -26,10 +26,17 @@ class Organization(models.Model):
 
 class Membership(models.Model):
 
+    # ✅ Add constants
+    ROLE_OWNER = "OWNER"
+    ROLE_ADMIN = "ADMIN"
+    ROLE_MANAGER = "MANAGER"
+    ROLE_MEMBER = "MEMBER"
+
     ROLE_CHOICES = (
-        ("ADMIN", "Admin"),
-        ("MANAGER", "Manager"),
-        ("MEMBER", "Member"),
+        (ROLE_OWNER, "Owner"),
+        (ROLE_ADMIN, "Admin"),
+        (ROLE_MANAGER, "Manager"),
+        (ROLE_MEMBER, "Member"),
     )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -49,7 +56,7 @@ class Membership(models.Model):
     role = models.CharField(
         max_length=20,
         choices=ROLE_CHOICES,
-        default="MEMBER"
+        default=ROLE_MEMBER
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

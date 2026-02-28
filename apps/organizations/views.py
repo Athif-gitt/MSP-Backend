@@ -7,7 +7,7 @@ from .services.organization_service import OrganizationService
 
 class OrganizationCreateView(generics.GenericAPIView):
     serializer_class = OrganizationCreateSerializer
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
