@@ -55,6 +55,11 @@ class Task(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True)
 
+    due_date = models.DateTimeField(null=True, blank=True)
+
+    reminder_sent = models.BooleanField(default=False)
+    
+
     class Meta:
         ordering = ["-created_at"]
 
