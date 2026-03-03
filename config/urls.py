@@ -19,6 +19,10 @@ from django.urls import path, re_path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework.routers import DefaultRouter
+
+from apps.projects.views import ProjectViewSet
+from apps.tasks.views import TaskViewSet
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -30,6 +34,9 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
+router = DefaultRouter()
+router.register(r'projects', ProjectViewSet, basename="projects")
+router.register(r'tasks', TaskViewSet, basename="tasks")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,4 +45,6 @@ urlpatterns = [
     re_path(r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0)),
     path("api/auth/", include("apps.accounts.urls")),
     path("api/organizations/", include("apps.organizations.urls")),
+    path("api/projects/", include("apps.projects.urls")),
+    path('api/', include(router.urls)),
 ]
