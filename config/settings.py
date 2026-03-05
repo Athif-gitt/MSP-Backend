@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'apps.projects',
     'apps.tasks',
     'drf_yasg',
+    'django_celery_beat',
+    'apps.activity',
 ]
 
 MIDDLEWARE = [
@@ -160,7 +162,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 SIMPLE_JWT={
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=6),   # change this
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=24),   # change this
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),   # optional
 
     "ROTATE_REFRESH_TOKENS": False,
