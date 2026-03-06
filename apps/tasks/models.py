@@ -2,8 +2,9 @@ import uuid
 from django.db import models
 from django.conf import settings
 from apps.projects.models import Project
+from apps.common.models import SoftDeleteModel
 
-class Task(models.Model):
+class Task(SoftDeleteModel):
     
     STATUS_TODO = "TODO"
     STATUS_IN_PROGRESS = "IN_PROGRESS"

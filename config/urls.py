@@ -40,11 +40,11 @@ router.register(r'tasks', TaskViewSet, basename="tasks")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
     re_path(r'swagger/', schema_view.with_ui("swagger", cache_timeout=0)),
     re_path(r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0)),
     path("api/auth/", include("apps.accounts.urls")),
     path("api/organizations/", include("apps.organizations.urls")),
     path("api/projects/", include("apps.projects.urls")),
     path('api/', include(router.urls)),
+    # path('api/', include("apps.tasks.urls")),
 ]
