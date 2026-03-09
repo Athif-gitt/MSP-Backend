@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+# from apps.organizations.models import Organization
 
 class UserManager(BaseUserManager):
 
@@ -24,6 +25,14 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
+
+#     organization = models.ForeignKey(
+#     Organization,
+#     on_delete=models.CASCADE,
+#     related_name="users",
+#     null=True,
+#     blank=True
+# )
 
     email_verified= models.BooleanField(default=False)
 

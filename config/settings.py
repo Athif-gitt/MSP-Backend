@@ -63,11 +63,13 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_celery_beat',
     'apps.activity',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -192,5 +194,17 @@ PASSWORD_HASHERS = [
     # "django.contrib.auth.hashers.PBKDF2PasswordHasher",
     # "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
     # "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+from corsheaders.defaults import default_headers
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "x-organization-id",
 ]
 

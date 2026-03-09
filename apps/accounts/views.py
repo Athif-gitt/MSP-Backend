@@ -5,12 +5,13 @@ from django.utils.encoding import force_str
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import RegisterSerializer, LoginSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from .tokens import email_verification_token
+
 
 
 User = get_user_model()
@@ -72,3 +73,15 @@ class LoginView(generics.GenericAPIView):
             serializer.validated_data,
             status=status.HTTP_200_OK
         )
+    
+class MeView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+
+        user = request.user
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
