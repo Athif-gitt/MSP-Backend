@@ -82,6 +82,9 @@ class MeView(APIView):
 
 
         user = request.user
-        serializer = UserSerializer(user)
+        serializer = UserSerializer(
+            user,
+            context ={"request": request}
+            )
 
         return Response(serializer.data, status=status.HTTP_200_OK)

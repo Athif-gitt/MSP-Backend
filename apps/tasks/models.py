@@ -10,11 +10,21 @@ class Task(SoftDeleteModel):
     STATUS_IN_PROGRESS = "IN_PROGRESS"
     STATUS_DONE = "DONE"
 
+    PRIORITY_LOW = "LOW"
+    PRIORITY_MEDIUM = "MEDIUM"
+    PRIORITY_HIGH = "HIGH"
+
     STATUS_CHOICES = [
-        (STATUS_TODO, "to do"),
-        (STATUS_IN_PROGRESS, "in progress"),
+        (STATUS_TODO, "To Do"),
+        (STATUS_IN_PROGRESS, "In Progress"),
         (STATUS_DONE, "Done")
     ]
+
+    PRIORITY_CHOICES = [
+    (PRIORITY_LOW, "Low"),
+    (PRIORITY_MEDIUM, "Medium"),
+    (PRIORITY_HIGH, "High"),
+]
 
     id = models.UUIDField(
         primary_key=True,
@@ -26,6 +36,12 @@ class Task(SoftDeleteModel):
         on_delete=models.CASCADE,
         related_name="tasks"
     )
+
+    priority = models.CharField(
+    max_length=10,
+    choices=PRIORITY_CHOICES,
+    default=PRIORITY_MEDIUM
+)
 
     title = models.CharField(max_length=255)
 

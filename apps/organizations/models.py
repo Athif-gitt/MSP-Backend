@@ -26,16 +26,13 @@ class Organization(models.Model):
 
 class Membership(models.Model):
 
-    # ✅ Add constants
     ROLE_OWNER = "OWNER"
     ROLE_ADMIN = "ADMIN"
-    ROLE_MANAGER = "MANAGER"
     ROLE_MEMBER = "MEMBER"
 
     ROLE_CHOICES = (
         (ROLE_OWNER, "Owner"),
         (ROLE_ADMIN, "Admin"),
-        (ROLE_MANAGER, "Manager"),
         (ROLE_MEMBER, "Member"),
     )
 
