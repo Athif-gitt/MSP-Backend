@@ -1,6 +1,8 @@
 import uuid
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
+from datetime import timedelta
 
 
 class Organization(models.Model):
@@ -67,3 +69,51 @@ class Membership(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.organization} ({self.role})"
+    
+class OrganizationInvitation(models.Model):
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    organization = models.ForeignKey(
+        "Organization",
+        on_delete=models.CASCADE,
+        related_name="invitations"
+    )
+
+    email = models.EmailField()
+
+    role = models.CharField(
+        max_length=20,
+        choices=[
+            ("ADMIN", "Admin"),
+            ("MEMBER", "Member"),
+        ]
+    )
+
+    invited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="sent_invitations"
+    )
+
+    token = models.UUIDField(default=uuid.uuid4, unique=True)
+
+    accepted = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    expires_at = models.DateTimeField()
+
+    class Meta:
+        unique_together = ["organization", "email"]
+        ordering = ["-created_at"]
+
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+
+    def save(self, *args, **kwargs):
+
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(hours=48)
+
+        super().save(*args, **kwargs)
