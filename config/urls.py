@@ -24,6 +24,8 @@ from rest_framework.routers import DefaultRouter
 from apps.projects.views import ProjectViewSet
 from apps.tasks.views import TaskViewSet
 
+from apps.notifications.views import NotificationViewSet
+
 schema_view = get_schema_view(
     openapi.Info(
         title="MSP API",
@@ -37,6 +39,7 @@ schema_view = get_schema_view(
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet, basename="projects")
 router.register(r'tasks', TaskViewSet, basename="tasks")
+router.register("notifications", NotificationViewSet, basename="notifications")
 
 urlpatterns = [
     path('admin/', admin.site.urls),

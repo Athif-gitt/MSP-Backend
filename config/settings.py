@@ -63,7 +63,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_celery_beat',
     'apps.activity',
-    'corsheaders'
+    'corsheaders',
+    'apps.notifications',
 ]
 
 MIDDLEWARE = [

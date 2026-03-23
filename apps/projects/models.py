@@ -3,6 +3,8 @@ from django.db import models
 from django.conf import settings
 from apps.organizations.models import Organization
 
+def generate_public_id():
+    return f"MSP-{str(uuid.uuid4())[:8].upper()}"
 
 class Project(models.Model):
 
@@ -32,6 +34,14 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     updated_at = models.DateTimeField(auto_now=True)
+
+    public_id = models.CharField(
+        max_length=20,
+        unique=True,
+        editable=False,
+    )
+
+
 
     class Meta:
         ordering = ["-created_at"]
