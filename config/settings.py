@@ -65,6 +65,10 @@ INSTALLED_APPS = [
     'apps.activity',
     'corsheaders',
     'apps.notifications',
+    'django.contrib.postgres',
+    'core',
+    'apps.search',
+    # 'apps.invitations',
 ]
 
 MIDDLEWARE = [

@@ -12,6 +12,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from .tokens import email_verification_token
 
+from .serializers import (
+    UserProfileSerializer,
+    UserProfileUpdateSerializer
+)
+from .services import get_current_user, update_current_user
+
 
 
 User = get_user_model()
@@ -88,3 +94,26 @@ class MeView(APIView):
             )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = get_current_user(request.user)
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request):
+        serializer = UserProfileUpdateSerializer(
+            request.user,
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+
+        user = update_current_user(
+            request.user,
+            serializer.validated_data
+        )
+
+        return Response(UserProfileSerializer(user).data, status=status.HTTP_202_ACCEPTED)

@@ -3,6 +3,8 @@ from django.db import models
 from django.conf import settings
 from apps.projects.models import Project
 from apps.common.models import SoftDeleteModel
+from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.indexes import GinIndex
 
 class Task(SoftDeleteModel):
     
@@ -75,10 +77,15 @@ class Task(SoftDeleteModel):
     due_date = models.DateTimeField(null=True, blank=True)
 
     reminder_sent = models.BooleanField(default=False)
+
+    search_vector = SearchVectorField(null=True)
     
 
     class Meta:
         ordering = ["-created_at"]
+        indexes = [
+            GinIndex(fields=["search_vector"]),
+        ]
 
     def __str__(self):
         return self.title

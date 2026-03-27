@@ -2,6 +2,9 @@ import uuid
 from django.db import models
 from django.conf import settings
 from apps.organizations.models import Organization
+from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.indexes import GinIndex
+
 
 def generate_public_id():
     return f"MSP-{str(uuid.uuid4())[:8].upper()}"
@@ -41,12 +44,15 @@ class Project(models.Model):
         editable=False,
     )
 
+    search_vector = SearchVectorField(null=True)
+
 
 
     class Meta:
         ordering = ["-created_at"]
         indexes = [
             models.Index(fields=["organization"]),
+            GinIndex(fields=['search_vector']),
         ]
 
     def __str__(self):
