@@ -20,7 +20,7 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / ".env")
+load_dotenv(BASE_DIR / ".env", override=True)
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
@@ -43,6 +43,8 @@ SECRET_KEY = 'django-insecure-1w046txdfnyi0)+)gh+s144$n&qdw*u$qsr!w8rur@cygaykog
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+FRONTEND_URL = "http://localhost:5173"
 
 
 # Application definition
