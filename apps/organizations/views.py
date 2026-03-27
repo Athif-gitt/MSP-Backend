@@ -21,6 +21,9 @@ from .models import OrganizationInvitation
 from .tasks import send_invitation_email
 from apps.common.permissions import IsAdminOrOwner
 
+from django.utils import timezone
+
+
 
 # ==============================
 # ORGANIZATION CREATE
@@ -125,3 +128,37 @@ class AcceptInvitationView(APIView):
             {"message": "Invitation accepted"},
             status=status.HTTP_200_OK
         )
+    
+class ValidateInvitationView(APIView):
+
+    permission_classes = []  # सार्वजनिक endpoint
+
+    def get(self, request):
+        token = request.query_params.get("token")
+
+        if not token:
+            return Response(
+                {"error": "Token is required"},
+                status=400
+            )
+
+        try:
+            invitation = OrganizationInvitation.objects.select_related(
+                "organization"
+            ).get(token=token)
+        except OrganizationInvitation.DoesNotExist:
+            return Response({"error": "Invalid invitation"}, status=404)
+        
+        if invitation.expires_at < timezone.now():
+            return Response({"error": "Invitation expired"}, status=400)
+
+        # ❌ Already accepted
+        if invitation.status == "ACCEPTED":
+            return Response({"error": "Invitation already accepted"}, status=400)
+
+        return Response({
+            "email": invitation.email,
+            "organization": invitation.organization.name,
+            "role": invitation.role,
+            "expires_at": invitation.expires_at,
+        })
