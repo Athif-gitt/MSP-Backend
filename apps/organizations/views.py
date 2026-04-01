@@ -131,7 +131,7 @@ class AcceptInvitationView(APIView):
     
 class ValidateInvitationView(APIView):
 
-    permission_classes = []  # सार्वजनिक endpoint
+    permission_classes = []  
 
     def get(self, request):
         token = request.query_params.get("token")

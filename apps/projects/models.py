@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.conf import settings
 from apps.organizations.models import Organization
+from apps.common.models import SoftDeleteModel
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 
@@ -9,7 +10,7 @@ from django.contrib.postgres.indexes import GinIndex
 def generate_public_id():
     return f"MSP-{str(uuid.uuid4())[:8].upper()}"
 
-class Project(models.Model):
+class Project(SoftDeleteModel):
 
     id = models.UUIDField(
         primary_key=True,

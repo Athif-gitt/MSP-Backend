@@ -18,6 +18,10 @@ from .serializers import (
 )
 from .services import get_current_user, update_current_user
 
+from .models import PasswordReset
+
+from .tasks import send_reset_email
+
 
 
 User = get_user_model()
@@ -99,8 +103,7 @@ class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = get_current_user(request.user)
-        serializer = UserProfileSerializer(user)
+        serializer = UserProfileSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request):
@@ -116,4 +119,54 @@ class ProfileView(APIView):
             serializer.validated_data
         )
 
-        return Response(UserProfileSerializer(user).data, status=status.HTTP_202_ACCEPTED)
+        return Response(
+            UserProfileSerializer(user).data,
+            status=status.HTTP_202_ACCEPTED
+        )
+
+User = get_user_model()
+
+class ForgotPasswordView(APIView):
+    # permission_classes = []
+
+    def post(self, request):
+        email = request.data.get('email')
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"detail": "If account exists, email sent"}, status=200)
+        
+        reset = PasswordReset.objects.create(user=user)
+
+        reset_link = f"http://localhost:5173/reset-password?token={reset.token}"
+
+        send_reset_email.delay(user.email, reset_link)
+
+        return Response({"detail": "Password reset email sent"})
+    
+class ResetPasswordView(APIView):
+
+    def post(self, request):
+        token = request.data.get("token")
+        password = request.data.get("password")
+
+        try:
+            reset = PasswordReset.objects.get(token=token, is_used=False)
+        except PasswordReset.DoesNotExist:
+            return Response({"detail": "Invalid token"}, status=400)
+
+        if reset.is_expired():
+            return Response({"detail": "Token expired"}, status=400)
+
+        user = reset.user
+        user.set_password(password)
+        user.save()
+
+        reset.is_used = True
+        reset.save()
+
+        return Response({"detail": "Password reset successful"})
+
+
+

@@ -28,3 +28,10 @@ class BaseTenantModelViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save()
+
+    def perform_destroy(self, instance):
+        if hasattr(instance, "soft_delete"):
+            instance.soft_delete()
+            return
+
+        instance.delete()

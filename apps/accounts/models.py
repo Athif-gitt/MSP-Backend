@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 # from apps.organizations.models import Organization
@@ -58,6 +59,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+class PasswordReset(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def is_expired(self):
+        from django.utils import timezone
+        return (timezone.now() - self.created_at).total_seconds() > 3600  # 1 hour
+    
+
+
 
     
 
@@ -66,5 +79,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         
 
         
-
 

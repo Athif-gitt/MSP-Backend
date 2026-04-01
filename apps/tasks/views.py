@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework import status
 
 from apps.common.permissions import (
     IsOrganizationMember,
@@ -37,6 +38,10 @@ class TaskViewSet(BaseTenantModelViewSet, RBACModelViewSet):
         "destroy": [IsAuthenticated, IsAdminOrOwner],
         "trash": [IsAuthenticated, IsAdminOrOwner],
         "restore": [IsAuthenticated, IsAdminOrOwner],
+        "bulk_restore": [IsAuthenticated, IsAdminOrOwner],
+        "hard_delete": [IsAuthenticated, IsAdminOrOwner],
+        "bulk_hard_delete": [IsAuthenticated, IsAdminOrOwner],
+        "empty_trash": [IsAuthenticated, IsAdminOrOwner],
         "assign": [IsAuthenticated, IsOrganizationMember],  # ✅ ADDED
     }
 
@@ -95,6 +100,61 @@ class TaskViewSet(BaseTenantModelViewSet, RBACModelViewSet):
 
         task.restore()
         return Response({"message": "successfully restored"})
+
+    @action(detail=False, methods=["post"], url_path="bulk-restore")
+    def bulk_restore(self, request):
+        ids = request.data.get("ids", [])
+
+        if not ids:
+            return Response(
+                {"detail": "ids is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        restored_count = Task.all_objects.filter(
+            id__in=ids,
+            is_deleted=True,
+            project__organization=request.organization,
+        ).restore()
+
+        return Response({"restored": restored_count})
+
+    @action(detail=True, methods=["delete"], url_path="hard-delete")
+    def hard_delete(self, request, pk=None):
+        task = Task.all_objects.get(
+            pk=pk,
+            is_deleted=True,
+            project__organization=request.organization,
+        )
+        task.hard_delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=["delete"], url_path="bulk-hard-delete")
+    def bulk_hard_delete(self, request):
+        ids = request.data.get("ids", [])
+
+        if not ids:
+            return Response(
+                {"detail": "ids is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        deleted_count, _ = Task.all_objects.filter(
+            id__in=ids,
+            is_deleted=True,
+            project__organization=request.organization,
+        ).hard_delete()
+
+        return Response({"deleted": deleted_count})
+
+    @action(detail=False, methods=["delete"], url_path="empty_trash")
+    def empty_trash(self, request):
+        deleted_count, _ = Task.all_objects.filter(
+            is_deleted=True,
+            project__organization=request.organization,
+        ).hard_delete()
+
+        return Response({"deleted": deleted_count})
 
     # -------------------------------
     # Assign Task (🔥 NEW)
