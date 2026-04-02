@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, MeSerializer
 from .tokens import email_verification_token
 
 from .serializers import (
@@ -85,19 +85,14 @@ class LoginView(generics.GenericAPIView):
         )
     
 class MeView(APIView):
-
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-
-
-        user = request.user
-        serializer = UserSerializer(
-            user,
-            context ={"request": request}
-            )
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = MeSerializer(
+            request.user,
+            context={"request": request}
+        )
+        return Response(serializer.data)
     
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]

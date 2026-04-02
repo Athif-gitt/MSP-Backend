@@ -49,6 +49,6 @@ urlpatterns = [
     path("api/organizations/", include("apps.organizations.urls")),
     path("api/projects/", include("apps.projects.urls")),
     path('api/', include(router.urls)),
-    # path('api/', include("apps.tasks.urls")),
+    path('api/', include("apps.tasks.urls")),
     path("api/search/", include("apps.search.urls")),
 ]

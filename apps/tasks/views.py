@@ -15,7 +15,7 @@ from apps.common.permissions import (
 )
 
 from .models import Task
-from .serializers import TaskSerializer
+from .serializers.task_serializer import TaskSerializer
 from .services.task_service import assign_task
 
 

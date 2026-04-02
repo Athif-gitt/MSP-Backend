@@ -56,5 +56,16 @@ class Project(SoftDeleteModel):
             GinIndex(fields=['search_vector']),
         ]
 
+    def save(self, *args, **kwargs):
+        if not self.public_id:
+            public_id = generate_public_id()
+
+            while Project.all_objects.filter(public_id=public_id).exists():
+                public_id = generate_public_id()
+
+            self.public_id = public_id
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name

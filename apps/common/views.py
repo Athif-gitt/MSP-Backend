@@ -10,7 +10,7 @@ class BaseTenantModelViewSet(ModelViewSet):
     All tenant models must inherit this.
     """
 
-    permission_classes = [IsAuthenticated, IsOrganizationMember]
+    permission_classes = [IsAuthenticated, IsOrganizationMember]  
 
     tenant_field = None  # must be set by child classes
 
