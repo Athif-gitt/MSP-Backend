@@ -17,9 +17,10 @@ from apps.organizations.services.invitation_service import (
     accept_invitation
 )
 
-from .models import OrganizationInvitation
+from .models import OrganizationInvitation, Membership
 from .tasks import send_invitation_email
 from apps.common.permissions import IsAdminOrOwner
+from .serializers import MemberSerializer
 
 from django.utils import timezone
 
@@ -159,6 +160,19 @@ class ValidateInvitationView(APIView):
         return Response({
             "email": invitation.email,
             "organization": invitation.organization.name,
+            "organization_name": invitation.organization.name,
             "role": invitation.role,
+            "invited_by_email": invitation.invited_by.email,
             "expires_at": invitation.expires_at,
         })
+    
+class OrganizationMembersView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        org = request.organization
+
+        members = Membership.objects.filter(organization=org).select_related("user")
+
+        serializer = MemberSerializer(members, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
