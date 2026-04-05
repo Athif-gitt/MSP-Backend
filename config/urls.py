@@ -51,4 +51,6 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/', include("apps.tasks.urls")),
     path("api/search/", include("apps.search.urls")),
+    path("api/dashboard/", include("apps.dashboard.urls")),
+    path('api/ai/', include('apps.ai.urls')),
 ]

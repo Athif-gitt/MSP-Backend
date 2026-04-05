@@ -79,6 +79,14 @@ class Task(SoftDeleteModel):
     reminder_sent = models.BooleanField(default=False)
 
     search_vector = SearchVectorField(null=True)
+
+    parent_task = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        related_name="subtasks",
+        on_delete=models.CASCADE
+    )
     
 
     class Meta:

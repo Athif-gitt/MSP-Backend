@@ -157,7 +157,7 @@ class ForgotPasswordView(APIView):
 class ResetPasswordView(APIView):
 
     def post(self, request):
-        token = request.data.get("token")
+        token = request.data.get("token") or request.query_params.get("token")
         password = request.data.get("password")
 
         try:

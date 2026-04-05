@@ -192,3 +192,51 @@ class TaskViewSet(BaseTenantModelViewSet, RBACModelViewSet):
         return Response({
             "message": "Task assigned successfully"
         })
+
+from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework.permissions import IsAuthenticated
+
+from apps.tasks.models import Task
+
+
+class BulkCreateSubtasksView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        parent_task_id = request.data.get("parent_task_id")
+        subtasks = request.data.get("subtasks", [])
+
+        if not parent_task_id:
+            return Response({"error": "parent_task_id required"}, status=400)
+
+        try:
+            parent_task = Task.objects.get(id=parent_task_id)
+        except Task.DoesNotExist:
+            return Response({"error": "Parent task not found"}, status=404)
+
+        created_tasks = []
+
+        for sub in subtasks:
+            title = sub.get("title")
+
+            if not title:
+                continue
+
+            task = Task.objects.create(
+                title=title,
+                project=parent_task.project,
+                parent_task=parent_task,
+                created_by=request.user,
+                # assignee=request.user  # or parent_task.assignee
+            )
+
+            created_tasks.append({
+                "id": task.id,
+                "title": task.title
+            })
+
+        return Response({
+            "message": "Subtasks created",
+            "tasks": created_tasks
+        })

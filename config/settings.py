@@ -22,6 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env", override=True)
 
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_HOST = "smtp.gmail.com"
@@ -71,6 +75,8 @@ INSTALLED_APPS = [
     'core',
     'apps.search',
     # 'apps.invitations',
+    'apps.dashboard',
+    'apps.ai',
 ]
 
 MIDDLEWARE = [
