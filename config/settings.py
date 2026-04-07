@@ -127,7 +127,7 @@ DATABASES = {
         'NAME': 'msp_db',
         'USER': 'msp_user',
         'PASSWORD': 'Msp@2468',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
