@@ -216,6 +216,7 @@ PASSWORD_HASHERS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://msp-stack.vercel.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
