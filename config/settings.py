@@ -225,3 +225,5 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     "x-organization-id",
 ]
 
+print("CI/CD TEST SUCCESS")
+
