@@ -50,6 +50,7 @@ ALLOWED_HOSTS = [
     "56.228.7.17",
     "localhost",
     "127.0.0.1",
+    "mspbackend.duckdns.org",
 ]
 
 FRONTEND_URL = "http://localhost:5173"
@@ -225,5 +226,4 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     "x-organization-id",
 ]
 
-print("CI/CD TEST SUCCESS")
 
